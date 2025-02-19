@@ -17,6 +17,7 @@ export default function Header() {
   }, []);
 
   const handleLogout = () => {
+    console.log("handleLogout");
     authApi.removeToken();
     setIsAuthenticated(false);
     toast({

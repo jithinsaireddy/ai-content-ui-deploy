@@ -18,7 +18,6 @@ export interface AuthResponse {
   tokenType: string;
 }
 
-const isBrowser = typeof window !== 'undefined';
 
 // Mock data for login mock. Will use demo = true for demo mode.
 const MOCK_AUTH_RESPONSE: AuthResponse = {
@@ -26,12 +25,15 @@ const MOCK_AUTH_RESPONSE: AuthResponse = {
   tokenType: "Bearer"
 };
 
+const IS_DEMO = true;
+
 // Authentication API utilities
 export const authApi = {
   // Login function
-  login: async (credentials: LoginRequest, demo: boolean = true): Promise<AuthResponse> => {
-    if (demo) {
+  login: async (credentials: LoginRequest): Promise<AuthResponse> => {
+    if (IS_DEMO) {
       // Return mock data for demo mode
+      console.log("MOCK_AUTH_RESPONSE", MOCK_AUTH_RESPONSE);
       return Promise.resolve(MOCK_AUTH_RESPONSE);
     }
 
@@ -77,22 +79,17 @@ export const authApi = {
 
   // Utility function to store token
   setToken: (token: string) => {
-    if (isBrowser) {
       localStorage.setItem('accessToken', token);
-    }
   },
 
   // Utility function to get token
   getToken: (): string | null => {
-    if (!isBrowser) return null;
     return localStorage.getItem('accessToken');
   },
 
   // Utility function to remove token
   removeToken: () => {
-    if (isBrowser) {
-      localStorage.removeItem('accessToken');
-    }
+    localStorage.removeItem('accessToken');
   },
 
   // Utility function to check if token is expired
@@ -108,13 +105,11 @@ export const authApi = {
 
   // Utility function to check if user is authenticated
   isAuthenticated: (): boolean => {
-    if (!isBrowser) return false;
-    
     const token = localStorage.getItem('accessToken');
     if (!token) return false;
     
     // Check if token is expired
-    if (authApi.isTokenExpired(token)) {
+    if (!IS_DEMO &&authApi.isTokenExpired(token)) {
       authApi.removeToken();
       return false;
     }
