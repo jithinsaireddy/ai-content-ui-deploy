@@ -4,6 +4,18 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { PerformancePredictionProps } from "@/lib/types"
 
 export default function PerformancePrediction({ data }: PerformancePredictionProps) {
+  // Helper function to format numbers
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
+    return num.toFixed(0)
+  }
+
+  // Helper function to format percentages
+  const formatPercentage = (num: number): string => {
+    return `${(num * 100).toFixed(2)}%`
+  }
+
   // Convert engagement metrics to percentages based on total
   const totalEngagement = (
     (data?.estimatedEngagement?.shares ?? 0) +
@@ -19,17 +31,44 @@ export default function PerformancePrediction({ data }: PerformancePredictionPro
     { metric: "Likes", value: ((data?.estimatedEngagement?.likes ?? 0) / totalEngagement) * 100 },
   ]
 
-  // Separate metrics for bar and line visualization
-  const lineData = ["roi", "conversion"];
-  
-  // Transform data for line chart
-  const transformedMetricsData = lineData.map(metric => ({
-    name: metric.toUpperCase(),
-    value: metric === 'roi' 
-      ? (data?.predictedMetrics?.roi ?? 0) * 100 
-      : (data?.predictedMetrics?.conversion ?? 0) * 100
-  }));
+  // Transform metrics data for visualization
+  const reachData = [
+    {
+      name: "Reach",
+      value: data?.predictedMetrics?.reach ?? 0,
+      description: "Unique users who will see the content",
+      trend: "↗",
+      color: "#8884d8"
+    },
+    {
+      name: "Impressions",
+      value: data?.predictedMetrics?.impressions ?? 0,
+      description: "Total number of times content will be displayed",
+      trend: "↗",
+      color: "#82ca9d"
+    }
+  ]
 
+  const conversionData = [
+    {
+      name: "ROI",
+      value: data?.predictedMetrics?.roi ?? 0,
+      description: "Return on Investment",
+      format: "multiplier",
+      trend: data?.predictedMetrics?.roi > 1 ? "↗" : "↘",
+      color: "#ff7300"
+    },
+    {
+      name: "Conversion Rate",
+      value: data?.predictedMetrics?.conversion ?? 0,
+      description: "Percentage of users who take desired action",
+      format: "percentage",
+      trend: data?.predictedMetrics?.conversion > 0.01 ? "↗" : "↘",
+      color: "#8884d8"
+    }
+  ]
+
+  // Bar chart data
   const barData = [
     {
       metric: "Metrics",
@@ -86,38 +125,66 @@ export default function PerformancePrediction({ data }: PerformancePredictionPro
             <AccordionItem value="metrics">
               <AccordionTrigger>Predicted Metrics</AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-4">
-                  {/* Bar Chart for Reach and Impressions */}
-                  <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={barData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="metric" />
-                      <YAxis label={{ value: 'Count', angle: -90, position: 'insideLeft' }} />
-                      <Tooltip formatter={(value: number) => [value.toFixed(0), 'Count']} />
-                      <Legend />
-                      <Bar dataKey="reach" fill="#8884d8" name="Reach" />
-                      <Bar dataKey="impressions" fill="#82ca9d" name="Impressions" />
-                    </BarChart>
-                  </ResponsiveContainer>
+                <div className="space-y-8">
+                  {/* Reach Metrics */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-semibold">Reach & Impressions</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {reachData.map((item) => (
+                        <div key={item.name} className="p-4 rounded-lg bg-card border">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <p className="text-sm font-medium text-muted-foreground">{item.name}</p>
+                              <p className="text-2xl font-bold" style={{ color: item.color }}>
+                                {formatNumber(item.value)} <span className="text-lg">{item.trend}</span>
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{item.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={barData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="metric" />
+                        <YAxis label={{ value: 'Count', angle: -90, position: 'insideLeft' }} />
+                        <Tooltip 
+                          formatter={(value: number) => [formatNumber(value), 'Count']} 
+                          labelStyle={{ color: '#000' }}
+                        />
+                        <Legend />
+                        <Bar dataKey="reach" fill="#8884d8" name="Reach" />
+                        <Bar dataKey="impressions" fill="#82ca9d" name="Impressions" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
 
-                  {/* Line Chart for ROI and Conversion */}
-                  <ResponsiveContainer width="100%" height={200}>
-                    <ComposedChart data={transformedMetricsData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis label={{ value: 'Percentage', angle: -90, position: 'insideLeft' }} />
-                      <Tooltip formatter={(value: number) => `${value.toFixed(2)}%`} />
-                      <Legend />
-                      <Line 
-                        type="monotone" 
-                        dataKey="value" 
-                        stroke="#ff7300" 
-                        name="Percentage"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </ComposedChart>
-                  </ResponsiveContainer>
+                  {/* Conversion Metrics */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-semibold">Conversion Metrics</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {conversionData.map((item) => (
+                        <div key={item.name} className="p-4 rounded-lg bg-card border">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <p className="text-sm font-medium text-muted-foreground">{item.name}</p>
+                              <p className="text-2xl font-bold" style={{ color: item.color }}>
+                                {item.format === 'percentage' 
+                                  ? formatPercentage(item.value)
+                                  : item.format === 'multiplier'
+                                    ? `${item.value.toFixed(2)}x`
+                                    : item.value.toFixed(2)
+                                }
+                                <span className="text-lg ml-1">{item.trend}</span>
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{item.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>

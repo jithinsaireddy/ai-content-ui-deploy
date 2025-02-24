@@ -14,11 +14,12 @@ interface ContentRequest {
   topic: string
   emotionalTone: string
   keywords: string
-  contentLength: string
+  desiredContentLength: string
   targetAudience: string
   category: string
-  writingStyle: string
-  optimizeForSeo: boolean
+  language: string
+  writingStyleSample: string
+  optimizeForSEO: boolean
   region: string
   metadata: {
     includeTrends: boolean
@@ -26,6 +27,8 @@ interface ContentRequest {
     includeExpertQuotes: boolean
     formatType: string
     researchDepth: string
+    priority: string
+    department: string
   }
 }
 
@@ -70,18 +73,21 @@ export default function ContentRequestForm({ onSubmit }: ContentRequestFormProps
     topic: "",
     emotionalTone: "optimistic",
     keywords: "",
-    contentLength: "medium",
+    desiredContentLength: "long",
     targetAudience: "",
-    writingStyle: "professional",
-    optimizeForSeo: true,
-    category: "general",
+    category: "technology",
+    language: "en",
+    writingStyleSample: "professional",
+    optimizeForSEO: true,
     region: "global",
     metadata: {
-      includeTrends: false,
-      includeStatistics: false,
-      includeExpertQuotes: false,
-      formatType: "standard",
-      researchDepth: "medium"
+      includeTrends: true,
+      includeStatistics: true,
+      includeExpertQuotes: true,
+      formatType: "detailed",
+      researchDepth: "comprehensive",
+      priority: "high",
+      department: "engineering"
     }
   })
 
@@ -169,43 +175,73 @@ export default function ContentRequestForm({ onSubmit }: ContentRequestFormProps
           </div>
 
           <div className="space-y-2">
-            <Label>Content Type</Label>
-            <SelectorGroup
+            <Label htmlFor="contentType">Content Type</Label>
+            <Input
+              id="contentType"
               name="contentType"
-              options={["Article", "Blog Post", "Whitepaper"]}
               value={request.contentType}
               onChange={handleChange}
+              placeholder="e.g., Article, Blog Post, Whitepaper, Newsletter, Case Study"
             />
+            <div className="text-xs text-muted-foreground">
+              Recommended: Article, Blog Post, Whitepaper, Newsletter, Case Study, Technical Report
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Content Length</Label>
-            <SelectorGroup
-              name="contentLength"
-              options={["Short", "Medium", "Long"]}
-              value={request.contentLength}
+            <Label htmlFor="desiredContentLength">Desired Content Length</Label>
+            <Input
+              id="desiredContentLength"
+              name="desiredContentLength"
+              value={request.desiredContentLength}
               onChange={handleChange}
+              placeholder="e.g., Short (500 words), Medium (1000-1500 words), Long (2000+ words)"
             />
+            <div className="text-xs text-muted-foreground">
+              Recommended: Short (500 words), Medium (1000-1500 words), Long (2000+ words), Custom length
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Emotional Tone</Label>
-            <SelectorGroup
+            <Label htmlFor="emotionalTone">Emotional Tone</Label>
+            <Input
+              id="emotionalTone"
               name="emotionalTone"
-              options={["Optimistic", "Neutral", "Cautious"]}
               value={request.emotionalTone}
               onChange={handleChange}
+              placeholder="e.g., Optimistic, Professional, Enthusiastic, Balanced"
             />
+            <div className="text-xs text-muted-foreground">
+              Recommended: Optimistic, Professional, Enthusiastic, Balanced, Authoritative, Empathetic
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Writing Style</Label>
-            <SelectorGroup
-              name="writingStyle"
-              options={["Professional", "Casual", "Academic"]}
-              value={request.writingStyle}
+            <Label htmlFor="writingStyleSample">Writing Style</Label>
+            <Input
+              id="writingStyleSample"
+              name="writingStyleSample"
+              value={request.writingStyleSample}
               onChange={handleChange}
+              placeholder="e.g., Professional, Technical, Conversational, Academic"
             />
+            <div className="text-xs text-muted-foreground">
+              Recommended: Professional, Technical, Conversational, Academic, Journalistic, Tutorial-style
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="language">Language</Label>
+            <Input
+              id="language"
+              name="language"
+              value={request.language}
+              onChange={handleChange}
+              placeholder="e.g., English, Spanish, French, German, Japanese"
+            />
+            <div className="text-xs text-muted-foreground">
+              Recommended: English (en), Spanish (es), French (fr), German (de), Japanese (ja), Chinese (zh)
+            </div>
           </div>
 
           <div className="space-y-2 md:col-span-2">
@@ -219,28 +255,154 @@ export default function ContentRequestForm({ onSubmit }: ContentRequestFormProps
             />
           </div>
 
-          <div className="md:col-span-2 flex justify-between items-center gap-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="optimizeForSeo"
-                checked={request.optimizeForSeo}
-                onCheckedChange={handleSwitchChange("optimizeForSeo")}
-              />
-              <Label htmlFor="optimizeForSeo">Optimize for SEO</Label>
-            </div>
+          <div className="space-y-2">
+            <Label>Category</Label>
+            <SelectorGroup
+              name="category"
+              options={["Technology", "Healthcare", "Business", "Science"]}
+              value={request.category}
+              onChange={handleChange}
+            />
+          </div>
 
-            <div className="flex items-center gap-4">
-              <Button type="button" variant="secondary" onClick={handleMockSubmit}>
-                Generate Mock Content
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Generating..." : "Generate Content"}
-              </Button>
+          <div className="space-y-2">
+            <Label>Region</Label>
+            <SelectorGroup
+              name="region"
+              options={["Global", "North America", "Europe", "Asia"]}
+              value={request.region}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <Label>Metadata Options</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="optimizeForSEO"
+                    checked={request.optimizeForSEO}
+                    onCheckedChange={handleSwitchChange("optimizeForSEO")}
+                  />
+                  <Label htmlFor="optimizeForSEO">Optimize for SEO</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="includeTrends"
+                    checked={request.metadata.includeTrends}
+                    onCheckedChange={(checked) =>
+                      setRequest((prev) => ({
+                        ...prev,
+                        metadata: { ...prev.metadata, includeTrends: checked },
+                      }))
+                    }
+                  />
+                  <Label htmlFor="includeTrends">Include Trends</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="includeStatistics"
+                    checked={request.metadata.includeStatistics}
+                    onCheckedChange={(checked) =>
+                      setRequest((prev) => ({
+                        ...prev,
+                        metadata: { ...prev.metadata, includeStatistics: checked },
+                      }))
+                    }
+                  />
+                  <Label htmlFor="includeStatistics">Include Statistics</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="includeExpertQuotes"
+                    checked={request.metadata.includeExpertQuotes}
+                    onCheckedChange={(checked) =>
+                      setRequest((prev) => ({
+                        ...prev,
+                        metadata: { ...prev.metadata, includeExpertQuotes: checked },
+                      }))
+                    }
+                  />
+                  <Label htmlFor="includeExpertQuotes">Include Expert Quotes</Label>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="space-y-2">
+                  <Label>Format Type</Label>
+                  <SelectorGroup
+                    name="formatType"
+                    options={["Detailed", "Standard", "Brief"]}
+                    value={request.metadata.formatType}
+                    onChange={(e) =>
+                      setRequest((prev) => ({
+                        ...prev,
+                        metadata: { ...prev.metadata, formatType: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Research Depth</Label>
+                  <SelectorGroup
+                    name="researchDepth"
+                    options={["Comprehensive", "Standard", "Basic"]}
+                    value={request.metadata.researchDepth}
+                    onChange={(e) =>
+                      setRequest((prev) => ({
+                        ...prev,
+                        metadata: { ...prev.metadata, researchDepth: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Priority</Label>
+                  <SelectorGroup
+                    name="priority"
+                    options={["High", "Medium", "Low"]}
+                    value={request.metadata.priority}
+                    onChange={(e) =>
+                      setRequest((prev) => ({
+                        ...prev,
+                        metadata: { ...prev.metadata, priority: e.target.value },
+                      }))
+                    }
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Department</Label>
+                  <Input
+                    id="department"
+                    name="department"
+                    value={request.metadata.department}
+                    onChange={(e) =>
+                      setRequest((prev) => ({
+                        ...prev,
+                        metadata: { ...prev.metadata, department: e.target.value },
+                      }))
+                    }
+                    placeholder="Enter department"
+                  />
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div className="md:col-span-2 flex justify-end gap-4">
+            <Button type="button" variant="secondary" onClick={handleMockSubmit}>
+              Generate Mock Content
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Generating..." : "Generate Content"}
+            </Button>
           </div>
         </form>
       </CardContent>
     </Card>
   )
 }
-

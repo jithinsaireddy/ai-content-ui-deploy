@@ -10,11 +10,12 @@ interface ContentRequest {
   topic: string
   emotionalTone: string
   keywords: string
-  contentLength: string
+  desiredContentLength: string
   targetAudience: string
   category: string
-  writingStyle: string
-  optimizeForSeo: boolean
+  language: string
+  writingStyleSample: string
+  optimizeForSEO: boolean
   region: string
   metadata: {
     includeTrends: boolean
@@ -22,6 +23,8 @@ interface ContentRequest {
     includeExpertQuotes: boolean
     formatType: string
     researchDepth: string
+    priority: string
+    department: string
   }
 }
 
@@ -56,4 +59,3 @@ export function useContentData() {
 
   return { data, loading, error, generateContent }
 }
-

@@ -1,45 +1,91 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar, Tooltip } from "recharts"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Gauge } from "@/components/ui/gauge"
+import { Sparkles, TrendingUp, CheckCircle2, AlertCircle } from 'lucide-react'
 import { EngagementPredictionProps } from "@/lib/types"
 
 export default function EngagementPrediction({ data }: EngagementPredictionProps) {
-  // Normalize the score and confidence to percentage for better visualization
-  const chartData = [
-    { name: "Score", value: (data?.score ?? 0) * 100 },
-    { name: "Confidence", value: (data?.confidence ?? 0) * 100 },
-  ]
+  const score = (data?.score ?? 0) * 100
+  const confidence = (data?.confidence ?? 0) * 100
+
+  const getScoreColor = (score: number) => {
+    if (score >= 90) return "text-green-500"
+    if (score >= 70) return "text-blue-500"
+    if (score >= 50) return "text-yellow-500"
+    return "text-red-500"
+  }
+
+  const getScoreLabel = (score: number) => {
+    if (score >= 90) return "Excellent"
+    if (score >= 70) return "Good"
+    if (score >= 50) return "Fair"
+    return "Poor"
+  }
+
+  const getConfidenceIcon = (confidence: number) => {
+    if (confidence >= 80) return <CheckCircle2 className="h-5 w-5 text-green-500" />
+    if (confidence >= 60) return <CheckCircle2 className="h-5 w-5 text-blue-500" />
+    return <AlertCircle className="h-5 w-5 text-yellow-500" />
+  }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Engagement Prediction</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5" />
+            Engagement Prediction
+          </CardTitle>
+          <Badge 
+            variant="outline" 
+            className={`flex items-center gap-1 ${getScoreColor(score)}`}
+          >
+            <TrendingUp className="h-4 w-4" />
+            {getScoreLabel(score)}
+          </Badge>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <ResponsiveContainer width="100%" height={200}>
-              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="name" />
-                <Radar name="Value (%)" dataKey="value" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-                <Tooltip formatter={(value: number) => `${value.toFixed(1)}%`} />
-              </RadarChart>
-            </ResponsiveContainer>
+        <div className="space-y-6">
+          {/* Score Gauge */}
+          <div className="flex items-center justify-center py-4">
+            <Gauge value={score} size="lg" showValue label="Engagement Score" />
           </div>
-          
+
+          {/* Confidence Level */}
           <div className="space-y-2">
-            <h4 className="font-semibold">Key Factors:</h4>
-            <ul className="list-disc pl-5 space-y-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {getConfidenceIcon(confidence)}
+                <span className="text-sm font-medium">Prediction Confidence</span>
+              </div>
+              <span className="text-sm font-bold">{confidence.toFixed(1)}%</span>
+            </div>
+            <Progress value={confidence} className="h-2" />
+          </div>
+
+          {/* Key Factors */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold">Success Factors</h4>
+            <div className="grid gap-2">
               {data?.factors?.map((factor, index) => (
-                <li key={index} className="text-sm text-muted-foreground">{factor}</li>
+                <div 
+                  key={index} 
+                  className="flex items-start gap-2 bg-secondary/20 p-2 rounded-md"
+                >
+                  <div className="mt-1">
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  </div>
+                  <span className="text-sm">{factor}</span>
+                </div>
               )) ?? (
-                <li className="text-sm text-muted-foreground">No factors available</li>
+                <div className="text-sm text-muted-foreground">No factors available</div>
               )}
-            </ul>
+            </div>
           </div>
         </div>
       </CardContent>
     </Card>
   )
 }
-

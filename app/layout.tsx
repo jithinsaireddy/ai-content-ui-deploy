@@ -3,6 +3,7 @@ import "@/styles/globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import Header from '../components/Header'
+import { MainNav } from "@/components/MainNav"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,9 +23,14 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Header />
-          <main className="container mx-auto py-4">
-            {children}
-          </main>
+          <div className="flex min-h-screen">
+            <aside className="hidden w-64 border-r bg-muted/40 lg:block">
+              <MainNav />
+            </aside>
+            <main className="flex-1 p-6">
+              {children}
+            </main>
+          </div>
         </ThemeProvider>
       </body>
     </html>
