@@ -1,9 +1,7 @@
 import type React from "react"
 import "@/styles/globals.css"
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
-import Header from '../components/Header'
-import { MainNav } from "@/components/MainNav"
+import { RootLayoutContent } from "@/components/RootLayoutContent"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,20 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Header />
-          <div className="flex min-h-screen">
-            <aside className="hidden w-64 border-r bg-muted/40 lg:block">
-              <MainNav />
-            </aside>
-            <main className="flex-1 p-6">
-              {children}
-            </main>
-          </div>
-        </ThemeProvider>
+        <RootLayoutContent>
+          {children}
+        </RootLayoutContent>
       </body>
     </html>
-  );
+  )
 }
-
-import './globals.css'

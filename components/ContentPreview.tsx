@@ -3,16 +3,27 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import ReactMarkdown from "react-markdown"
 import { useState, useMemo } from "react"
+import { ContentFeedback } from "./ContentFeedback"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 interface ContentPreviewProps {
   content: string
   title?: string
   onContentChange?: (content: string) => void
+  contentId?: number
 }
 
-export default function ContentPreview({ content, title, onContentChange }: ContentPreviewProps) {
+export default function ContentPreview({ content, title, onContentChange, contentId = 1 }: ContentPreviewProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(content)
+  const [showFeedback, setShowFeedback] = useState(false)
 
   const parsedContent = useMemo(() => {
     if (!title) return content
@@ -50,32 +61,58 @@ export default function ContentPreview({ content, title, onContentChange }: Cont
               size="sm"
               onClick={handleApply}
             >
-              Apply
+              Apply Changes
             </Button>
           )}
           <Button 
             variant="outline" 
             size="sm"
-            onClick={isEditing ? () => setIsEditing(false) : handleStartEditing}
+            onClick={handleStartEditing}
           >
             {isEditing ? "Cancel" : "Edit"}
           </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm">
+                Give Feedback
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Content Feedback</DialogTitle>
+                <DialogDescription>
+                  Help us improve our content generation by providing your feedback.
+                </DialogDescription>
+              </DialogHeader>
+              <ContentFeedback 
+                contentId={contentId} 
+                onFeedbackSubmitted={() => setShowFeedback(false)}
+              />
+            </DialogContent>
+          </Dialog>
         </div>
       </CardHeader>
-      <CardContent className="prose max-w-none">
+      <CardContent>
         {isEditing ? (
           <Textarea
             value={editedContent}
-            rows={50}
             onChange={handleContentChange}
             className="min-h-[200px] font-mono"
-            placeholder="Enter markdown content..."
           />
         ) : (
-          <ReactMarkdown>{parsedContent}</ReactMarkdown>
+          <div className="prose dark:prose-invert max-w-none">
+            <ReactMarkdown>{parsedContent}</ReactMarkdown>
+          </div>
+        )}
+        {!isEditing && !showFeedback && (
+          <div className="mt-6">
+            <ContentFeedback 
+              contentId={contentId}
+              onFeedbackSubmitted={() => setShowFeedback(false)}
+            />
+          </div>
         )}
       </CardContent>
     </Card>
   )
 }
-

@@ -11,7 +11,10 @@ import {
   Settings,
   PlusCircle,
   Globe,
+  Lightbulb,
+  Brain,
 } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const navItems = [
   {
@@ -25,6 +28,16 @@ const navItems = [
     icon: TrendingUp,
   },
   {
+    title: "Content Strategy",
+    href: "/content-strategy",
+    icon: Lightbulb,
+  },
+  {
+    title: "Community Model",
+    href: "/community-model",
+    icon: Brain,
+  },
+  {
     title: "Content Localization",
     href: "/localization",
     icon: Globe,
@@ -32,28 +45,50 @@ const navItems = [
   // Add more pages here as needed
 ]
 
-export function MainNav() {
+interface MainNavProps {
+  isCollapsed: boolean
+}
+
+export function MainNav({ isCollapsed }: MainNavProps) {
   const pathname = usePathname()
 
   return (
     <ScrollArea className="flex-1">
       <div className="flex w-full flex-col gap-2 p-2">
-        {navItems.map((item) => (
-          <Button
-            key={item.href}
-            variant={pathname === item.href ? "secondary" : "ghost"}
-            className={cn(
-              "w-full justify-start gap-2",
-              pathname === item.href && "bg-muted"
-            )}
-            asChild
-          >
-            <Link href={item.href}>
-              <item.icon className="h-4 w-4" />
-              {item.title}
-            </Link>
-          </Button>
-        ))}
+        <TooltipProvider delayDuration={0}>
+          {navItems.map((item) => {
+            const NavItem = (
+              <Button
+                key={item.href}
+                variant={pathname === item.href ? "secondary" : "ghost"}
+                className={cn(
+                  "w-full justify-start gap-2",
+                  pathname === item.href && "bg-muted",
+                  isCollapsed && "justify-center"
+                )}
+                asChild
+              >
+                <Link href={item.href}>
+                  <item.icon className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
+                  {!isCollapsed && <span>{item.title}</span>}
+                </Link>
+              </Button>
+            )
+
+            if (isCollapsed) {
+              return (
+                <Tooltip key={item.href}>
+                  <TooltipTrigger asChild>{NavItem}</TooltipTrigger>
+                  <TooltipContent side="right" className="font-medium">
+                    {item.title}
+                  </TooltipContent>
+                </Tooltip>
+              )
+            }
+
+            return NavItem
+          })}
+        </TooltipProvider>
       </div>
     </ScrollArea>
   )
