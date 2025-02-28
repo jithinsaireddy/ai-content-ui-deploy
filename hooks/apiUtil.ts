@@ -1,5 +1,5 @@
 // API base URL
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://ec2-3-80-214-139.compute-1.amazonaws.com/api';
 
 // Types for authentication
 export interface LoginRequest {
@@ -11,6 +11,7 @@ export interface RegisterRequest {
   username: string;
   email: string;
   password: string;
+  industry: string;
 }
 
 export interface AuthResponse {

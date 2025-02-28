@@ -14,7 +14,8 @@ export default function RegisterPage() {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    industry: ''
   });
   const router = useRouter();
   const { toast } = useToast();
@@ -38,6 +39,7 @@ export default function RegisterPage() {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        industry: formData.industry,
       });
       
       const loginResponse = await authApi.login({
@@ -106,6 +108,20 @@ export default function RegisterPage() {
                 required
                 placeholder="Enter your email"
                 value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="industry" className="text-sm font-medium">
+                Industry
+              </label>
+              <Input
+                id="industry"
+                name="industry"
+                type="text"
+                required
+                placeholder="Enter your industry"
+                value={formData.industry}
                 onChange={handleChange}
               />
             </div>
