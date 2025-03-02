@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import type { ContentData } from "@/types"
-import { authApi } from "@/hooks/apiUtil"
+import { authApi, API_ENDPOINTS } from "@/hooks/apiUtil"
 
 interface ContentRequest {
   title: string
@@ -37,7 +37,7 @@ export function useContentData() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch("http://localhost:8080/api/content/generate", {
+      const response = await fetch(API_ENDPOINTS.content.generate, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json", 

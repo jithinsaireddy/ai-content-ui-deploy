@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TrendsResponse } from '@/lib/types/trends';
-import { authApi } from '@/hooks/apiUtil';
+import { authApi, API_ENDPOINTS } from '@/hooks/apiUtil';
 
 export function useTrends() {
   const [data, setData] = useState<TrendsResponse | null>(null);
@@ -12,8 +12,8 @@ export function useTrends() {
     setError(null);
     try {
       const url = category
-        ? `http://localhost:8080/api/trends/category/${encodeURIComponent(category)}`
-        : "http://localhost:8080/api/trends";
+        ? API_ENDPOINTS.trends.getByCategory(category)
+        : API_ENDPOINTS.trends.getAll;
 
       const response = await fetch(url, {
         method: "GET",

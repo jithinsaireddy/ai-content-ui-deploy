@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { LocalizationRequest } from "@/lib/types/localization"
-import { authApi } from "@/hooks/apiUtil"
+import { authApi, API_ENDPOINTS } from "@/hooks/apiUtil"
 
 export function useLocalization() {
   const [data, setData] = useState<any | null>(null)
@@ -18,7 +18,7 @@ export function useLocalization() {
         enableRealTimeMonitoring: request.enableRealTimeMonitoring.toString()
       })
 
-      const response = await fetch(`http://localhost:8080/api/v1/localization/localize?${queryParams}`, {
+      const response = await fetch(`${API_ENDPOINTS.localization.localize}?${queryParams}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

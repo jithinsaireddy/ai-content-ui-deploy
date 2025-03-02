@@ -1,5 +1,24 @@
 // API base URL
 const API_BASE_URL = 'http://ec2-3-80-214-139.compute-1.amazonaws.com/api';
+const LOCAL_API_BASE_URL = 'http://localhost:8080/api';
+
+// API endpoints
+export const API_ENDPOINTS = {
+  auth: {
+    login: `${API_BASE_URL}/auth/login`,
+    register: `${API_BASE_URL}/auth/register`,
+  },
+  trends: {
+    getAll: `${LOCAL_API_BASE_URL}/trends`,
+    getByCategory: (category: string) => `${LOCAL_API_BASE_URL}/trends/category/${encodeURIComponent(category)}`,
+  },
+  localization: {
+    localize: `${LOCAL_API_BASE_URL}/v1/localization/localize`,
+  },
+  content: {
+    generate: `${LOCAL_API_BASE_URL}/content/generate`,
+  },
+};
 
 // Types for authentication
 export interface LoginRequest {
@@ -39,7 +58,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${API_ENDPOINTS.auth.login}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +80,7 @@ export const authApi = {
   // Register function
   register: async (userData: RegisterRequest): Promise<void> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${API_ENDPOINTS.auth.register}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
