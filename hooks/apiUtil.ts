@@ -1,6 +1,7 @@
 // API base URL
-const API_BASE_URL = 'http://ec2-3-80-214-139.compute-1.amazonaws.com/api';
-const LOCAL_API_BASE_URL = 'http://localhost:8080/api';
+// const API_BASE_URL = 'http://ec2-3-80-214-139.compute-1.amazonaws.com/api';
+// const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'https://sentlyze.xyz/api';
 
 // API endpoints
 export const API_ENDPOINTS = {
@@ -9,14 +10,14 @@ export const API_ENDPOINTS = {
     register: `${API_BASE_URL}/auth/register`,
   },
   trends: {
-    getAll: `${LOCAL_API_BASE_URL}/trends`,
-    getByCategory: (category: string) => `${LOCAL_API_BASE_URL}/trends/category/${encodeURIComponent(category)}`,
+    getAll: `${API_BASE_URL}/trends`,
+    getByCategory: (category: string) => `${API_BASE_URL}/trends/category/${encodeURIComponent(category)}`,
   },
   localization: {
-    localize: `${LOCAL_API_BASE_URL}/v1/localization/localize`,
+    localize: `${API_BASE_URL}/v1/localization/localize`,
   },
   content: {
-    generate: `${LOCAL_API_BASE_URL}/content/generate`,
+    generate: `${API_BASE_URL}/content/generate`,
   },
 };
 
@@ -45,7 +46,7 @@ const MOCK_AUTH_RESPONSE: AuthResponse = {
   tokenType: "Bearer"
 };
 
-const IS_DEMO = true;
+const IS_DEMO = false;
 
 // Authentication API utilities
 export const authApi = {
