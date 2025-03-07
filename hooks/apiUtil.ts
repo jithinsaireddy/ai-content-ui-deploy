@@ -1,7 +1,5 @@
 // API base URL
-// const API_BASE_URL = 'http://ec2-3-80-214-139.compute-1.amazonaws.com/api';
-// const API_BASE_URL = 'http://localhost:8080/api';
-const API_BASE_URL = 'https://sentlyze.xyz/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
 
 // API endpoints
 export const API_ENDPOINTS = {
@@ -39,7 +37,6 @@ export interface AuthResponse {
   tokenType: string;
 }
 
-
 // Mock data for login mock. Will use demo = true for demo mode.
 const MOCK_AUTH_RESPONSE: AuthResponse = {
   accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTczOTY3ODg1NiwiZXhwIjoxNzM5NzY1MjU2fQ.yVhX8HBZVVvRCL8pQjZ3rcxWX5xeEO5N_fqj-11zzc7TOGXo_TsTmn6kENlPw81u2SIAuRDhw2cm9HdO9pSFBw",
@@ -47,6 +44,20 @@ const MOCK_AUTH_RESPONSE: AuthResponse = {
 };
 
 const IS_DEMO = false;
+
+// Utility function for fetch with CORS handling
+const fetchWithCors = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  try {
+    const response = await fetch(url, options);
+    return response;
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes('CORS')) {
+      // Retry with no-cors mode for opaque responses
+      return fetch(url, { ...options, mode: 'no-cors' });
+    }
+    throw error;
+  }
+};
 
 // Authentication API utilities
 export const authApi = {
@@ -59,7 +70,7 @@ export const authApi = {
     }
 
     try {
-      const response = await fetch(`${API_ENDPOINTS.auth.login}`, {
+      const response = await fetchWithCors(`${API_ENDPOINTS.auth.login}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +92,7 @@ export const authApi = {
   // Register function
   register: async (userData: RegisterRequest): Promise<void> => {
     try {
-      const response = await fetch(`${API_ENDPOINTS.auth.register}`, {
+      const response = await fetchWithCors(`${API_ENDPOINTS.auth.register}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

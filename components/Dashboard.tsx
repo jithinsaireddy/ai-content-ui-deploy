@@ -19,6 +19,7 @@ import KeywordOptimization from "./KeywordOptimization"
 import DetailedSentimentAnalysis from "./DetailedSentimentAnalysis"
 import ContentTrendAnalysis from "./ContentTrendAnalysis"
 import SensitivityAnalysis from "./SensitivityAnalysis"
+import ReadabilityAnalysis from "./ReadabilityAnalysis"
 
 interface ContentRequest {
   title: string
@@ -83,7 +84,10 @@ export default function Dashboard() {
 
             {/* Analysis Section - 40% */}
             <div className="lg:w-[40%] space-y-6">
-              {/* <SentimentAnalysis data={data.content.analyzedSentiment} /> */}
+              {/* Readability Analysis - Top Priority */}
+              {data.content.readabilityScore && (
+                <ReadabilityAnalysis data={JSON.parse(data.content.readabilityScore)} />
+              )}
               <SensitivityAnalysis data={data.sensitivityAnalysis} />
               <PerformancePrediction data={data.performancePrediction} />
             </div>
