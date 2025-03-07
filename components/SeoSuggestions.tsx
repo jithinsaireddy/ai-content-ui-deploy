@@ -13,10 +13,25 @@ interface SeoSuggestionsProps {
 }
 
 export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
-  const rawData = JSON.parse(data).rawSuggestions
-  // Remove json markers and backticks
-  const cleanJson = rawData.replace(/```json\n|```/g, '')
-  const seoData: SeoData = JSON.parse(cleanJson)
+  let seoData: SeoData = {
+    Keywords: [],
+    "Title Suggestions": [],
+    "Meta Description": [],
+    "Content Suggestions": []
+  }
+
+  try {
+    const rawData = JSON.parse(data).rawSuggestions
+    // Clean up the JSON data
+    let cleanJson = rawData
+      // Remove json markers and backticks
+      .replace(/```json\n|```/g, '')
+      // Remove any content after the last closing brace
+      .replace(/}[^}]*$/g, '}')
+    seoData = JSON.parse(cleanJson)
+  } catch (error) {
+    console.error('Error parsing SEO data:', error)
+  }
 
   return (
     <Card>

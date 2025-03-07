@@ -19,7 +19,7 @@ export default function KeywordOptimization({ data }: KeywordOptimizationProps) 
   
   // Parse the keyword section to extract keywords and sources
   const keywordSection = Object.keys(parsedData.keyword_frequency)[0]
-  const keywordLines = keywordSection.split('\\n').filter(line => line.includes('**'))
+  const keywordLines = keywordSection?.split('\\n').filter(line => line.includes('**')) || []
   
   const keywords: KeywordData[] = keywordLines.map(line => {
     const keywordMatch = line.match(/\*\*(.*?)\*\*/)
