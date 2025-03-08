@@ -14,11 +14,11 @@ export default function SensitivityAnalysis({ data }: SensitivityAnalysisProps) 
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-secondary/20 rounded-lg">
               <p className="text-sm text-muted-foreground mb-1">Sensitivity Score</p>
-              <p className="text-2xl font-semibold">{(data.sensitivityScore * 100).toFixed(0)}%</p>
+              <p className="text-2xl font-semibold">{((data?.sensitivityScore || 0) * 100).toFixed(0)}%</p>
             </div>
             <div className="p-3 bg-secondary/20 rounded-lg">
               <p className="text-sm text-muted-foreground mb-1">Confidence</p>
-              <p className="text-2xl font-semibold">{(data.confidence * 100).toFixed(0)}%</p>
+              <p className="text-2xl font-semibold">{((data?.confidence || 0) * 100).toFixed(0)}%</p>
             </div>
           </div>
 
@@ -32,7 +32,8 @@ export default function SensitivityAnalysis({ data }: SensitivityAnalysisProps) 
               </AccordionTrigger>
               <AccordionContent>
                 <ul className="space-y-2">
-                  {data.warnings.map((warning, index) => (
+                  {data?.warnings?.map((warning, index) => (
+
                     <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0 text-destructive" />
                       <span>{warning}</span>
@@ -51,7 +52,7 @@ export default function SensitivityAnalysis({ data }: SensitivityAnalysisProps) 
               </AccordionTrigger>
               <AccordionContent>
                 <ul className="space-y-2">
-                  {data.suggestions.map((suggestion, index) => (
+                  {data?.suggestions?.map((suggestion, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <CheckCircle className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                       <span>{suggestion}</span>
