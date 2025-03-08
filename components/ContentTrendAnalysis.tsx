@@ -19,7 +19,8 @@ export default function ContentTrendAnalysis({ data }: TrendAnalysisProps) {
   const parsedData: Record<string, TrendData> = JSON.parse(data)
   const [title, trendData] = Object.entries(parsedData)[0]
 
-  const formatChange = (change: number) => {
+  const formatChange = (change: number | undefined) => {
+    if (!change) return '0.0%'
     if (change >= 1000000) return `${(change / 1000000).toFixed(1)}M%`
     if (change >= 1000) return `${(change / 1000).toFixed(1)}K%`
     return `${change.toFixed(1)}%`
@@ -70,7 +71,7 @@ export default function ContentTrendAnalysis({ data }: TrendAnalysisProps) {
                   <div className="space-y-1">
                     <div className="text-sm font-medium">Engagement Score</div>
                     <div className="text-2xl font-bold">
-                      {(trendData.engagement * 100).toFixed(0)}%
+                      {((trendData?.engagement || 0) * 100).toFixed(0)}%
                     </div>
                   </div>
                   <Zap className="h-8 w-8 text-yellow-500" />
@@ -98,19 +99,19 @@ export default function ContentTrendAnalysis({ data }: TrendAnalysisProps) {
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium">Interest Over Time</div>
               <div className="text-sm">
-                {(trendData.interest_over_time * 100).toFixed(4)}%
+                {((trendData?.interest_over_time || 0) * 100).toFixed(4)}%
               </div>
             </div>
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium">Volatility</div>
               <div className="text-sm">
-                {(trendData.volatility * 100).toFixed(1)}%
+                {((trendData?.volatility || 0) * 100).toFixed(1)}%
               </div>
             </div>
             <div className="flex items-center justify-between">
               <div className="text-sm font-medium">Dynamic Weight</div>
               <div className="text-sm">
-                {(trendData.dynamicWeight * 100).toFixed(1)}%
+                {((trendData?.dynamicWeight || 0) * 100).toFixed(1)}%
               </div>
             </div>
           </div>
