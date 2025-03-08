@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 interface SeoData {
-  Keywords: string[]
-  Title_suggestions: string[]
-  Meta_description: string[]
-  Content_suggestions: string[]
+  keywords: string[]
+  title_suggestions: string[]
+  meta_description: string[]
+  content_suggestions: string[]
 }
 
 interface SeoSuggestionsProps {
@@ -14,10 +14,10 @@ interface SeoSuggestionsProps {
 
 export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
   let seoData: SeoData = {
-    Keywords: [],
-    Title_suggestions: [],
-    Meta_description: [],
-    Content_suggestions: []
+    keywords: [],
+    title_suggestions: [],
+    meta_description: [],
+    content_suggestions: []
   }
 
   try {
@@ -41,21 +41,21 @@ export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
       }
     }
 
-    // Assign data with fallbacks, using the correct field names from backend
+    // Assign data with fallbacks, using lowercase field names from backend
     seoData = {
-      Keywords: Array.isArray(parsedData.Keywords) ? parsedData.Keywords : [],
-      Title_suggestions: Array.isArray(parsedData.Title_suggestions) ? parsedData.Title_suggestions : [],
-      Meta_description: Array.isArray(parsedData.Meta_description) ? parsedData.Meta_description : [],
-      Content_suggestions: Array.isArray(parsedData.Content_suggestions) ? parsedData.Content_suggestions : []
+      keywords: Array.isArray(parsedData.keywords) ? parsedData.keywords : [],
+      title_suggestions: Array.isArray(parsedData.title_suggestions) ? parsedData.title_suggestions : [],
+      meta_description: Array.isArray(parsedData.meta_description) ? parsedData.meta_description : [],
+      content_suggestions: Array.isArray(parsedData.content_suggestions) ? parsedData.content_suggestions : []
     };
   } catch (error) {
     console.error('Error parsing SEO data:', error);
     // Use empty arrays as fallback
     seoData = {
-      Keywords: [],
-      Title_suggestions: [],
-      Meta_description: [],
-      Content_suggestions: []
+      keywords: [],
+      title_suggestions: [],
+      meta_description: [],
+      content_suggestions: []
     };
   }
 
@@ -69,7 +69,7 @@ export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
         <div>
           <h3 className="text-sm font-semibold mb-2">Keywords</h3>
           <div className="flex flex-wrap gap-2">
-            {seoData?.Keywords?.map((keyword, index) => (
+            {seoData?.keywords?.map((keyword, index) => (
               <Badge key={index} variant="secondary">
                 {keyword}
               </Badge>
@@ -81,7 +81,7 @@ export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
         <div>
           <h3 className="text-sm font-semibold mb-2">Title Suggestions</h3>
           <ul className="space-y-2">
-            {seoData?.Title_suggestions?.map((title, index) => (
+            {seoData?.title_suggestions?.map((title, index) => (
               <li key={index} className="text-sm bg-secondary/10 p-2 rounded">
                 {title}
               </li>
@@ -93,7 +93,7 @@ export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
         <div>
           <h3 className="text-sm font-semibold mb-2">Meta Descriptions</h3>
           <ul className="space-y-2">
-            {seoData?.Meta_description?.map((desc, index) => (
+            {seoData?.meta_description?.map((desc, index) => (
               <li key={index} className="text-sm bg-secondary/10 p-2 rounded">
                 {desc}
               </li>
@@ -105,7 +105,7 @@ export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
         <div>
           <h3 className="text-sm font-semibold mb-2">Content Suggestions</h3>
           <ul className="space-y-2">
-            {seoData?.Content_suggestions?.map((suggestion, index) => (
+            {seoData?.content_suggestions?.map((suggestion, index) => (
               <li key={index} className="text-sm bg-secondary/10 p-2 rounded flex items-start">
                 <span className="mr-2">•</span>
                 <span>{suggestion}</span>
