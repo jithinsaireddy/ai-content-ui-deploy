@@ -36,21 +36,22 @@ export default function TrendsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="h-full">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
         <h1 className="text-3xl font-bold">Trending Topics</h1>
         
-        <div className="flex items-center gap-2 w-full md:w-auto">
+        <div className="flex items-center gap-2 w-full lg:w-auto min-w-[300px]">
           <Input
             placeholder="Search by category (e.g., technology)"
             value={searchCategory}
             onChange={(e) => setSearchCategory(e.target.value)}
-            className="max-w-xs"
+            className="flex-1"
           />
           <Button 
             variant="outline" 
             onClick={() => setSearchCategory("")}
             disabled={!searchCategory}
+            className="shrink-0"
           >
             Clear
           </Button>
@@ -88,7 +89,7 @@ export default function TrendsPage() {
             </Card>
           ))
         ) : (
-          <ScrollArea className="h-[800px]">
+          <ScrollArea className="h-[calc(100vh-12rem)]">
             {filteredTrends.map(trend => (
               <Card key={trend.id} className="mb-4">
                 <CardHeader>

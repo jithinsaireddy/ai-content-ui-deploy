@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { authApi } from '@/hooks/apiUtil';
@@ -28,9 +29,15 @@ export default function Header() {
   };
 
   return (
-    <header className="container mx-auto py-4 flex justify-between items-center">
-      <h1 className="text-3xl font-bold">AI Content Platform</h1>
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto py-4 flex justify-between items-center">
+        <Link 
+          href="/home" 
+          className="text-2xl font-bold hover:text-primary transition-colors"
+        >
+          AI Content Platform
+        </Link>
+        <div className="flex items-center gap-4">
         {isAuthenticated && (
           <Button
             variant="ghost"
@@ -40,6 +47,7 @@ export default function Header() {
           </Button>
         )}
         <ThemeToggle />
+        </div>
       </div>
     </header>
   );

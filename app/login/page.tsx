@@ -22,12 +22,39 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      // Clear any existing token first
+      authApi.removeToken();
+      
+      console.log('Before login - Token:', authApi.getToken());
       const response = await authApi.login(formData);
-      authApi.setToken(response.accessToken);
+      console.log('Got login response:', response);
+      
+      if (!response?.accessToken) {
+        throw new Error('No access token received');
+      }
+      
+      // Ensure token is in correct format
+      if (!response.accessToken.includes('.')) {
+        throw new Error('Invalid token format received');
+      }
+      
+      // Store the token with Bearer prefix
+      const token = `${response.tokenType || 'Bearer'} ${response.accessToken}`;
+      console.log('Storing token format:', token.substring(0, 20) + '...');
+      authApi.setToken(token);
+      
+      // Verify token was stored
+      const storedToken = authApi.getToken();
+      console.log('Stored token exists:', !!storedToken);
+      
+      if (!storedToken) {
+        throw new Error('Failed to store token');
+      }
       toast({
         title: "Success",
         description: "Login successful!",
       });
+      console.log('Token before redirect:', authApi.getToken());
       router.push('/dashboard');
     } catch (error) {
       toast({
@@ -49,8 +76,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-[400px]">
+    <div className="container flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] bg-background relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-background -z-10" aria-hidden="true" />
+      <div className="absolute inset-0 bg-grid-black/5 -z-10" aria-hidden="true" />
+
+      <Card className="w-[400px] border-primary/10 shadow-xl">
         <CardHeader>
           <CardTitle>Welcome Back</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>
@@ -58,60 +88,52 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="usernameOrEmail" className="text-sm font-medium">
-                Username or Email
-              </label>
               <Input
                 id="usernameOrEmail"
                 name="usernameOrEmail"
                 type="text"
                 required
-                placeholder="Enter your username or email"
+                placeholder="Username or Email"
                 value={formData.usernameOrEmail}
                 onChange={handleChange}
+                className="h-11"
               />
             </div>
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 required
-                placeholder="Enter your password"
+                placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}
+                className="h-11"
               />
             </div>
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4">
-
-
-          <Button 
+            <Button 
               type="submit" 
-              className="w-full"
+              className="w-full h-11"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
+          </CardFooter>
+        </form>
 
-
-            </CardFooter>
-            </form>
-
-            <p className="text-sm text-center text-muted-foreground mb-4">
-              Don't have an account?{' '}
-              <Button 
-                variant="link" 
-                className="p-0 h-auto font-normal"
-                onClick={() => router.push('/register')}
-              >
-                Register
-              </Button>
-            </p>
+        <div className="text-center pb-6">
+          <p className="text-sm text-muted-foreground mb-3">Don't have an account?</p>
+          <Button 
+            variant="outline" 
+            className="w-full h-11"
+            onClick={() => router.push('/register')}
+          >
+            Create Account
+          </Button>
+        </div>
       </Card>
     </div>
   );

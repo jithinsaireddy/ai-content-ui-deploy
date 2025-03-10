@@ -43,10 +43,10 @@ export default function SeoSuggestions({ data }: SeoSuggestionsProps) {
 
     // Assign data with fallbacks, using lowercase field names from backend
     seoData = {
-      keywords: Array.isArray(parsedData.keywords) ? parsedData.keywords : [],
-      title_suggestions: Array.isArray(parsedData.title_suggestions) ? parsedData.title_suggestions : [],
-      meta_description: Array.isArray(parsedData.meta_description) ? parsedData.meta_description : [],
-      content_suggestions: Array.isArray(parsedData.content_suggestions) ? parsedData.content_suggestions : []
+      keywords: Array.isArray(parsedData.Keywords) ? parsedData.Keywords : [],
+      title_suggestions: Array.isArray(parsedData["Title suggestions"]) ? parsedData["Title suggestions"] : [],
+      meta_description: Array.isArray(parsedData["Meta description"]) ? parsedData["Meta description"] : [],
+      content_suggestions: Array.isArray(parsedData["Content suggestions"]) ? parsedData["Content suggestions"] : []
     };
   } catch (error) {
     console.error('Error parsing SEO data:', error);
