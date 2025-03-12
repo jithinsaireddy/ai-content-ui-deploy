@@ -19,7 +19,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const navItems = [
   {
     title: "Content Generation",
-    href: "/",
+    href: "/dashboard",
     icon: LayoutDashboard,
   },
   {
